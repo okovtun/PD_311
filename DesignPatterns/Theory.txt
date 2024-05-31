@@ -1,0 +1,5 @@
+1. Singletone;
+2. Factory;
+3. Abstract factory;
+4. Builder;
+5. Prototype;

@@ -1,6 +1,7 @@
 ﻿#define _USE_MATH_DEFINES
 #include<Windows.h>
 #include<iostream>
+#include<ctime>
 using namespace std;
 
 //#define MIN_SIZE		50
@@ -21,7 +22,7 @@ namespace MyGeometry
 		GREY = 0x00AAAAAA,
 		YELLOW = 0x0000FFFF
 	};
-#define SHAPE_TAKE_PARAMETERS unsigned int x, unsigned int y, unsigned int line_width = 5, Color color = Color::GREY
+#define SHAPE_TAKE_PARAMETERS unsigned int x, unsigned int y, unsigned int line_width, COLORREF color
 #define SHAPE_GIVE_PARAMETERS x, y, line_width, color
 	class Shape
 	{
@@ -29,17 +30,17 @@ namespace MyGeometry
 		unsigned int x;
 		unsigned int y;
 		unsigned int line_width;
-		Color color;
+		COLORREF color;
 	public:
 
 		static const int MIN_SIZE = 50;
-		static const int MAX_SIZE = 800;
+		static const int MAX_SIZE = 300;
 		static const int MIN_LINE_WIDTH = 1;
 		static const int MAX_LINE_WIDTH = 25;
 		static const int MAX_HORIZONTAL_RESOLUTION = 800;
 		static const int MAX_VERTICAL_RESOLUTION = 600;
 
-		
+
 		unsigned int get_x()const
 		{
 			return x;
@@ -119,7 +120,7 @@ namespace MyGeometry
 		}
 
 		//				Constructors:
-		Rectangle(double width, double height, SHAPE_TAKE_PARAMETERS) :	Shape(SHAPE_GIVE_PARAMETERS)
+		Rectangle(double width, double height, SHAPE_TAKE_PARAMETERS) : Shape(SHAPE_GIVE_PARAMETERS)
 		{
 			set_width(width);
 			set_height(height);
@@ -174,7 +175,7 @@ namespace MyGeometry
 		}
 		void info()const override
 		{
- 			cout << typeid(*this).name() << endl;
+			cout << typeid(*this).name() << endl;
 			cout << "Ширина: " << width << endl;
 			cout << "Высота: " << height << endl;
 			Shape::info();
@@ -205,7 +206,7 @@ namespace MyGeometry
 		}
 		double get_perimeter()const override
 		{
-			return M_PI*get_diameter();
+			return M_PI * get_diameter();
 		}
 		void set_radius(double radius)
 		{
@@ -217,7 +218,7 @@ namespace MyGeometry
 			set_radius(radius);
 		}
 		~Circle() {}
-		
+
 		void draw()const override
 		{
 			HWND hwnd = GetConsoleWindow();
@@ -247,21 +248,31 @@ namespace MyGeometry
 	Shape* ShapeFactory(int shape_id)
 	{
 		Shape* shape = nullptr;
-		switch (shape_id)
-		{
-		case 1:	shape = new Rectangle(
-			rand()%Shape::MAX_SIZE, rand()%Shape::MAX_SIZE, 
-			rand()%Shape::MAX_HORIZONTAL_RESOLUTION, rand()%Shape::MAX_VERTICAL_RESOLUTION, 
-			rand()%Shape::MAX_LINE_WIDTH),
-
-		}
+#define SHAPE_PARAMETERS rand() % Shape::MAX_HORIZONTAL_RESOLUTION, rand() % Shape::MAX_VERTICAL_RESOLUTION,rand() % Shape::MAX_LINE_WIDTH,RGB(rand(), rand(), rand())
+			switch (shape_id)
+			{
+			case 1:	shape = new Rectangle
+					(
+						rand() % Shape::MAX_SIZE, rand() % Shape::MAX_SIZE,
+						rand() % Shape::MAX_HORIZONTAL_RESOLUTION, rand() % Shape::MAX_VERTICAL_RESOLUTION,
+						rand() % Shape::MAX_LINE_WIDTH,
+						RGB(rand(), rand(), rand())
+					);
+				break;
+			case 2: shape = new Square(rand() % Shape::MAX_SIZE, SHAPE_PARAMETERS); break;
+			case 3: shape = new Circle(rand() % Shape::MAX_SIZE, SHAPE_PARAMETERS); break;
+			}
 		return shape;
 	}
 }
 
+//#define USING_ENUM_COLOR
+//#define USING_COLORREF
+
 void main()
 {
 	setlocale(LC_ALL, "");
+#ifdef USING_ENUM_COLOR
 	MyGeometry::Rectangle rect(100, 50, 350, 100, 8, MyGeometry::Color::RED);
 	/*cout << "Ширина прямоугольника: " << rect.get_width() << endl;
 	cout << "Высота прямоугольника: " << rect.get_height() << endl;
@@ -275,4 +286,37 @@ void main()
 
 	MyGeometry::Circle circle(75, 750, 100, 5, MyGeometry::Color::YELLOW);
 	circle.info();
+#endif // ENUM_COLOR
+
+#ifdef USING_COLORREF
+	MyGeometry::Rectangle rect(100, 50, 350, 100, 8, RGB(255, 0, 0));
+	/*cout << "Ширина прямоугольника: " << rect.get_width() << endl;
+	cout << "Высота прямоугольника: " << rect.get_height() << endl;
+	cout << "Площадь прямоугольника: " << rect.get_area() << endl;
+	cout << "Периметр прямоугольника: " << rect.get_perimeter() << endl;
+	rect.draw();*/
+	rect.info();
+
+	MyGeometry::Square square(44, 550, 100, 5, RGB(0, 0, 255));
+	square.info();
+
+	MyGeometry::Circle circle(75, 750, 100, 5, RGB(255, 255, 0));
+	circle.info();
+#endif // USING_COLORREF
+
+	srand(time(NULL));
+	const int n = 15;
+	MyGeometry::Shape* shape[n]{};
+	for (int i = 0; i < n; i++)
+	{
+		shape[i] = MyGeometry::ShapeFactory(rand() % 3 + 1);
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		shape[i]->draw();
+		Sleep(500);
+	}
+
+	for (int i = 0; i < n; i++)delete[] shape[i];
 }

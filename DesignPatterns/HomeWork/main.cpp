@@ -1,333 +1,251 @@
-#include <iostream>
-#include <windows.h>
-#include <string>
-#include <time.h>
-#include <vector>
-#define MAX_LENGTH 10
-#define MIN_LENGTH 1
-#define CONSOLE_WIDTH 120
-#define CONSOLE_HEIGHT 30
-#define PI 3.14159
-using std::cout;
-using std::cin;
-using std::endl;
-HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-void setCursor(int x, int y)
-{
-	COORD myCoords = { x,y };//инициализируем передаваемыми значениями объект координат
-	SetConsoleCursorPosition(hStdOut, myCoords);
-	RGB(150, 160, 200)
-}
-class Figure
-{
-protected:
-	double area;
-	double perimeter;
-	int x;
-	int y;
-	virtual void setArea() = 0;
-	virtual void setPerimeter() = 0;
-public:
-	virtual void printInfo() const = 0;
-	virtual void printFigure() const = 0;
-	virtual void setPosition(int x, int y) = 0;
-	const double& getPerimeter() const
-	{
-		return perimeter;
-	}
-	const double& getArea() const
-	{
-		return area;
-	}
-};
-class MyRectangle : public Figure
-{
-protected:
-	int width;
-	int height;
-	double diagonal;
-	int x;
-	int y;
-	void setDiagonal()
-	{
-		diagonal = sqrt(width * width + height * height);
-	}
-	void setArea() override
-	{
-		area = width * height;
-	}
-	void setPerimeter() override
-	{
-		perimeter = (width + height) * 2;
-	}
-	void setHeight(int value)
-	{
-		height = value < MIN_LENGTH ? MIN_LENGTH :
-			value > MAX_LENGTH ? MAX_LENGTH :
-			value;
-	}
-	void setWidth(int value)
-	{
-		width = value < MIN_LENGTH ? MIN_LENGTH :
-			value > MAX_LENGTH ? MAX_LENGTH :
-			value;
-	}
-public:
-	MyRectangle()
-	{
-		setSize(MIN_LENGTH + rand() % (MAX_LENGTH - MIN_LENGTH + 1), MIN_LENGTH + rand() % (MAX_LENGTH - MIN_LENGTH + 1));
-		setPosition(rand() % (CONSOLE_WIDTH - width), rand() % (CONSOLE_HEIGHT - height));
-	}
-	MyRectangle(int width, int height, int x, int y)
-	{
-		setSize(width, height);
-		setPosition(x, y);
-	}
-	void setSize(int width, int height)
-	{
-		setWidth(width);
-		setHeight(height);
-		setPerimeter();
-		setArea();
-		setDiagonal();
-	}
-	const int& getWidth() const
-	{
-		return width;
-	}
-	const int& getHeight() const
-	{
-		return height;
-	}
-	const double& getDiagonal() const
-	{
-		return diagonal;
-	}
-	void setPosition(int x, int y) override
-	{
-		this->x = x < 0 ? 0 :
-			x > CONSOLE_WIDTH - width ? CONSOLE_WIDTH - width :
-			x;
-		this->y = y < 0 ? 0 :
-			y > CONSOLE_HEIGHT - height ? CONSOLE_HEIGHT - height :
-			y;
-	}
-	void printInfo() const override
-	{
-		cout << "Rectangle:" << endl
-			<< "width = " << width << endl
-			<< "height = " << height << endl
-			<< "diagonal = " << diagonal << endl
-			<< "area = " << area << endl
-			<< "perimeter = " << perimeter << endl << endl;
-	}
-	void printFigure() const override
-	{
-		for (size_t i = 0; i < height; i++)
-		{
-			setCursor(x, y + i);
-			for (size_t j = 0; j < width; j++)
-			{
-				cout << "*";
-			}
-			cout << endl;
-		}
-	}
-};
-class Square : public MyRectangle
-{
-public:
-	Square()
-	{
-		setSize(MIN_LENGTH + rand() % (MAX_LENGTH - MIN_LENGTH + 1));
-		setPosition(rand() % (CONSOLE_WIDTH - width), rand() % (CONSOLE_HEIGHT - width));
-	}
-	Square(int side, int x, int y)
-	{
-		setSize(side);
-		setPosition(x, y);
-	}
-	void setSize(int side)
-	{
-		setWidth(side);
-		setHeight(side);
-		setPerimeter();
-		setArea();
-		setDiagonal();
-	}
-	void printInfo() const override
-	{
-		cout << "Square:" << endl
-			<< "side = " << width << endl
-			<< "diagonal = " << diagonal << endl
-			<< "area = " << area << endl
-			<< "perimeter = " << perimeter << endl << endl;
-	}
-	void printFigure() const override
-	{
-		for (size_t i = 0; i < width; i++)
-		{
-			setCursor(x, y + i);
-			for (size_t j = 0; j < width; j++)
-			{
-				cout << "-";
-			}
-			cout << endl;
-		}
-	}
-};
-class Circle : public Figure
-{
-	double radius;
-	double diameter;
-	int x;
-	int y;
-	void setPerimeter() override
-	{
-		perimeter = 2 + PI + radius;
-	}
-	void setDiameter()
-	{
-		diameter = 2 * radius;
-	}
-	void setArea() override
-	{
-		area = PI * radius * radius;
-	}
-public:
-	void setRadius(int value)
-	{
-		radius = value;
-		setPerimeter();
-		setDiameter();
-		setArea();
-	}
-	const double& getRadius() const
-	{
-		return radius;
-	}
-	const double& getDiameter() const
-	{
-		return diameter;
-	}
-	void setPosition(int x, int y) override
-	{
-		this->x = x < 0 ? 0 :
-			x > CONSOLE_WIDTH - 20 ? CONSOLE_WIDTH - 20 :
-			x;
-		this->y = y < 0 ? 0 :
-			y > CONSOLE_HEIGHT ? CONSOLE_HEIGHT :
-			y;
-	}
-	Circle()
-	{
-		setRadius(MIN_LENGTH + rand() % (MAX_LENGTH - MIN_LENGTH + 1));
-		setPosition(rand() % (CONSOLE_WIDTH - 20), rand() % CONSOLE_HEIGHT);
-	}
-	Circle(double radius, int x, int y)
-	{
-		setRadius(radius);
-		setPosition(x, y);
-	}
-	void printInfo() const override
-	{
-		cout << "Circle:" << endl
-			<< "radius = " << radius << endl
-			<< "diameter = " << diameter << endl
-			<< "area = " << area << endl
-			<< "perimeter = " << perimeter << endl << endl;
-	}
-	void printFigure() const override
-	{
-		setCursor(x, y);
-		cout << "Это круг, честно\n";
-	}
-};
-class Triangle : public Figure
-{
-	//Будем полагать, что треугольник прямоугольный и равнобедренный
-	int height;
-	//Было бы проще надобавлять всяких медиан и биссектрис, если бы треугольник не пришлось рисовать в консоли, 
-	// потому что в таком случае у него было бы три точных стороны
-	void setArea() override
-	{
-		area = height * height / 2;
-	}
-	void setPerimeter() override
-	{
-		double thirdSide = sqrt(height * height + height * height);
-		perimeter = thirdSide + height * 2;
-	}
-public:
-	void printInfo() const override
-	{
-		cout << "Triangle:" << endl
-			<< "height = " << height << endl
-			<< "area = " << area << endl
-			<< "perimeter = " << perimeter << endl << endl;
-	}
-	void printFigure() const override
-	{
-		for (size_t i = 0; i < height; i++)
-		{
-			setCursor(x, y + i);
-			for (size_t j = 0; j < i + 1; j++)
-			{
-				cout << "+";
-			}
-			cout << endl;
-		}
-	}
-	void setHeight(int value)
-	{
-		height = value < MIN_LENGTH ? MIN_LENGTH :
-			value > MAX_LENGTH ? MAX_LENGTH :
-			value;
-		setArea();
-		setPerimeter();
-	}
-	const int& getHeight() const
-	{
-		return height;
-	}
-	void setPosition(int x, int y) override
-	{
-		this->x = x < 0 ? 0 :
-			x > CONSOLE_WIDTH - height ? CONSOLE_WIDTH - height :
-			x;
-		this->y = y < 0 ? 0 :
-			y > CONSOLE_HEIGHT - height ? CONSOLE_HEIGHT - height :
-			y;
-	}
-	Triangle()
-	{
-		setHeight(MIN_LENGTH + rand() % (MAX_LENGTH - MIN_LENGTH + 1));
-		setPosition(rand() % (CONSOLE_WIDTH - height), rand() % (CONSOLE_HEIGHT - height));
-	}
-	Triangle(int height, int x, int y)
-	{
-		setHeight(height);
-		setPosition(x, y);
-	}
-};
-//TODO:
-//В проекте 'Factory' реализовать иерархию геометрических фигур :
-//Квадрат, Прямоугольник, Крут, треугольник.......
-//для каждой фигуры нужно вывести ее первичные свойства, например,
-//длина сторон, радиус ........и вторичные свойства : диагональ,
-//площадь, периметр....
-//Так же каждую фигуру нужно нарисовать.
-//
-//Необходимо сгенерировать все эти фигуры в случайном порядке со случайными свойствами.
-void main()
-{
-	setlocale(LC_ALL, "");
-	srand(time(NULL));
-	system("mode con: cols=120 lines=30");
-	std::vector<Figure*> factory{ new MyRectangle(), new Square(), new Circle(), new Triangle() };
-	for (size_t i = 0; i < factory.size(); i++)
-	{
-		factory[i]->printFigure();
-	}
+#include<windows.h>
+#include<iostream>
 
+using namespace std;
+
+//#define MIN_SIZE		50
+//#define MAX_SIZE		800
+//#define MIN_LINE_WIDTH	1
+//#define MAX_LINE_WIDTH	25
+//
+//#define MAX_HORIZONTAL_RESOLUTION	800
+//#define MAX_VERTICAL_RESOLUTION		600
+
+
+
+namespace MyGeometry
+{
+	enum Color
+	{
+		RED = 0x000000FF,
+		GREEN = 0x0000FF00,
+		BLUE = 0x00FF0000,
+		GREY = 0x00AAAAAA,
+		YELLOW = 0x0000FFFF
+	};
+	class Shape
+	{
+	protected:
+		static const int MIN_SIZE = 50;
+		static const int MAX_SIZE = 800;
+		static const int MIN_LINE_WIDTH = 1;
+		static const int MAX_LINE_WIDTH = 25;
+		static const int MAX_HORIZONTAL_RESOLUTION = 800;
+		static const int MAX_VERTICAL_RESOLUTION = 600;
+
+		unsigned int x;
+		unsigned int y;
+		unsigned int line_width;
+		Color color;
+	public:
+
+		unsigned int get_x()const {
+			return x;
+		}
+		unsigned int get_y()const {
+			return y;
+		}
+		unsigned int get_line_width()const {
+			return line_width;
+		}
+		unsigned int set_size(unsigned int size) {
+			return
+				size < MIN_SIZE ? MIN_SIZE :
+				size > MAX_SIZE ? MAX_SIZE :
+				size;
+		}
+		void set_x(unsigned int x) {
+			this->x = x < MAX_HORIZONTAL_RESOLUTION ? x : MAX_HORIZONTAL_RESOLUTION;
+		}
+		void set_y(unsigned int y) {
+			this->y = y < MAX_VERTICAL_RESOLUTION ? y : MAX_VERTICAL_RESOLUTION;
+		}
+		void set_line_width(unsigned int line_width) {
+			if (line_width < MIN_LINE_WIDTH)line_width = MIN_LINE_WIDTH;
+			if (line_width > MAX_LINE_WIDTH)line_width = MAX_LINE_WIDTH;
+			this->line_width = line_width;
+		}
+
+		//				Constructors:
+		Shape(unsigned int x, unsigned int y, unsigned int line_width = 5, Color color = Color::GREY) :color(color) {
+			set_x(x);
+			set_y(y);
+			set_line_width(line_width);
+		}
+		virtual ~Shape() {}
+
+		//				Methods:
+		virtual double get_area()const = 0;
+		virtual double get_perimeter()const = 0;
+		virtual void draw()const = 0;
+
+		virtual void info()const {
+			cout << "Площадь фигуры: " << get_area() << endl;
+			cout << "Периметр фигуры: " << get_perimeter() << endl;
+			draw();
+		}
+	};
+
+	class Rectangle :public Shape
+	{
+		double width;
+		double height;
+	public:
+		double get_width()const {
+			return width;
+		}
+		double get_height()const {
+			return height;
+		}
+		void set_width(double width) {
+			this->width = set_size(width);
+		}
+		void set_height(double height) {
+			this->height = set_size(height);
+		}
+
+		//				Constructors:
+		Rectangle(double width, double height, unsigned int x, unsigned int y, unsigned int line_width, Color color) :
+			Shape(x, y, line_width, color)
+		{
+			set_width(width);
+			set_height(height);
+		}
+		~Rectangle() {}
+
+		//				Methods:
+		double get_area()const override {
+			return width * height;
+		}
+		double get_perimeter()const override {
+			return (width + height) * 2;
+		}
+
+		void draw()const override {
+
+
+			HWND hwnd = GetConsoleWindow();
+
+			HDC hdc = GetDC(hwnd);
+
+
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);	//Карандаш рисует контур фигуры
+			HBRUSH hBrush = CreateSolidBrush(color);	//Кисть заливает фигуру
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			::Rectangle(hdc, x, y, x + width, y + height);
+
+
+
+			DeleteObject(hPen);
+			DeleteObject(hBrush);
+
+			ReleaseDC(hwnd, hdc);
+
+
+		}
+		void info()const override {
+			cout << typeid(*this).name() << endl;
+			cout << "Ширина: " << width << endl;
+			cout << "Высота: " << height << endl;
+			Shape::info();
+		}
+	};
+
+
+
+	class Square : public Shape
+	{
+
+		double size;
+
+
+	public:
+
+		double get_size()const {
+			return size;
+		}
+
+		void set_size_for_Square(double size) {
+			this->size = set_size(size);
+		}
+
+		//Constructpor
+		Square(double size, unsigned int x, unsigned int y, unsigned int line_width, Color color) :Shape(x, y, line_width, color) {
+			set_size_for_Square(size);
+		}
+		~Square() {}
+
+		//metods
+
+
+		double get_area()const override {
+			return size * size;
+		}
+		double get_perimeter()const override {
+			return size * 4;
+		}
+		void  draw()const override {
+
+			for (int i = 0; i < size; i++)
+			{
+				for (int j = 0; j < size; j++)
+				{
+					cout << "*";
+				}
+				cout << endl;
+			}
+
+
+
+
+		}
+		void info()const override {
+			cout << typeid(*this).name() << endl;
+
+			cout << "размер: " << size << "x" << size << endl;
+			Shape::info();
+		}
+
+	};
+
+	class Triangle :public Shape {
+
+		double hypotenuse;
+		double Leg1, Leg2;
+	public:
+
+		double get_hypotenuse()const {
+
+			return hypotenuse;
+		}
+		double get_leg1()const {
+			return Leg1;
+		}
+
+		double get_leg2()const {
+
+			return Leg2;
+		}
+
+
+
+	};
+}
+
+
+
+
+
+void main() {
+	setlocale(LC_ALL, "");
+
+	MyGeometry::Rectangle rect(100, 50, 100, 200, 8, MyGeometry::Color::RED);
+	rect.info(); cout << endl;
+
+
+	MyGeometry::Square square(100, 100, 200, 8, MyGeometry::Color::GREEN);
+	/*square.info();*/
 }

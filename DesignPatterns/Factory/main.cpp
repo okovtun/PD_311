@@ -1,4 +1,5 @@
-﻿#include<Windows.h>
+﻿#define _USE_MATH_DEFINES
+#include<Windows.h>
 #include<iostream>
 using namespace std;
 
@@ -20,9 +21,17 @@ namespace MyGeometry
 		GREY = 0x00AAAAAA,
 		YELLOW = 0x0000FFFF
 	};
+#define SHAPE_TAKE_PARAMETERS unsigned int x, unsigned int y, unsigned int line_width = 5, Color color = Color::GREY
+#define SHAPE_GIVE_PARAMETERS x, y, line_width, color
 	class Shape
 	{
 	protected:
+		unsigned int x;
+		unsigned int y;
+		unsigned int line_width;
+		Color color;
+	public:
+
 		static const int MIN_SIZE = 50;
 		static const int MAX_SIZE = 800;
 		static const int MIN_LINE_WIDTH = 1;
@@ -30,11 +39,6 @@ namespace MyGeometry
 		static const int MAX_HORIZONTAL_RESOLUTION = 800;
 		static const int MAX_VERTICAL_RESOLUTION = 600;
 
-		unsigned int x;
-		unsigned int y;
-		unsigned int line_width;
-		Color color;
-	public:
 		
 		unsigned int get_x()const
 		{
@@ -71,7 +75,7 @@ namespace MyGeometry
 		}
 
 		//				Constructors:
-		Shape(unsigned int x, unsigned int y, unsigned int line_width = 5, Color color = Color::GREY) :color(color)
+		Shape(SHAPE_TAKE_PARAMETERS) :color(color)
 		{
 			set_x(x);
 			set_y(y);
@@ -115,8 +119,7 @@ namespace MyGeometry
 		}
 
 		//				Constructors:
-		Rectangle(double width, double height, unsigned int x, unsigned int y, unsigned int line_width, Color color) :
-			Shape(x, y, line_width, color)
+		Rectangle(double width, double height, SHAPE_TAKE_PARAMETERS) :	Shape(SHAPE_GIVE_PARAMETERS)
 		{
 			set_width(width);
 			set_height(height);
@@ -171,22 +174,105 @@ namespace MyGeometry
 		}
 		void info()const override
 		{
-			cout << typeid(*this).name() << endl;
+ 			cout << typeid(*this).name() << endl;
 			cout << "Ширина: " << width << endl;
 			cout << "Высота: " << height << endl;
 			Shape::info();
 		}
 	};
+	class Square :public Rectangle
+	{
+	public:
+		Square(double side, SHAPE_TAKE_PARAMETERS) :Rectangle(side, side, SHAPE_GIVE_PARAMETERS) {}
+		~Square() {}
+	};
+
+	class Circle : public Shape
+	{
+		double radius;
+	public:
+		double get_radius()const
+		{
+			return radius;
+		}
+		double get_diameter()const
+		{
+			return 2 * radius;
+		}
+		double get_area()const override
+		{
+			return M_PI * radius*radius;
+		}
+		double get_perimeter()const override
+		{
+			return M_PI*get_diameter();
+		}
+		void set_radius(double radius)
+		{
+			this->radius = set_size(radius);
+		}
+		//				Constructors:
+		Circle(double radius, SHAPE_TAKE_PARAMETERS) :Shape(SHAPE_GIVE_PARAMETERS)
+		{
+			set_radius(radius);
+		}
+		~Circle() {}
+		
+		void draw()const override
+		{
+			HWND hwnd = GetConsoleWindow();
+
+			HDC hdc = GetDC(hwnd);
+
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+
+			::Ellipse(hdc, x, y, x + get_diameter(), y + get_diameter());
+
+			DeleteObject(hPen);
+			DeleteObject(hBrush);
+			ReleaseDC(hwnd, hdc);
+		}
+		void info()const override
+		{
+			cout << typeid(*this).name() << endl;
+			cout << "Радиус: " << get_radius() << endl;
+			cout << "Диаметр: " << get_diameter() << endl;
+			Shape::info();
+		}
+	};
+	Shape* ShapeFactory(int shape_id)
+	{
+		Shape* shape = nullptr;
+		switch (shape_id)
+		{
+		case 1:	shape = new Rectangle(
+			rand()%Shape::MAX_SIZE, rand()%Shape::MAX_SIZE, 
+			rand()%Shape::MAX_HORIZONTAL_RESOLUTION, rand()%Shape::MAX_VERTICAL_RESOLUTION, 
+			rand()%Shape::MAX_LINE_WIDTH),
+
+		}
+		return shape;
+	}
 }
 
 void main()
 {
 	setlocale(LC_ALL, "");
-	MyGeometry::Rectangle rect(100, 50, 100, 200, 8, MyGeometry::Color::RED);
+	MyGeometry::Rectangle rect(100, 50, 350, 100, 8, MyGeometry::Color::RED);
 	/*cout << "Ширина прямоугольника: " << rect.get_width() << endl;
 	cout << "Высота прямоугольника: " << rect.get_height() << endl;
 	cout << "Площадь прямоугольника: " << rect.get_area() << endl;
 	cout << "Периметр прямоугольника: " << rect.get_perimeter() << endl;
 	rect.draw();*/
 	rect.info();
+
+	MyGeometry::Square square(44, 550, 100, 5, MyGeometry::Color::GREY);
+	square.info();
+
+	MyGeometry::Circle circle(75, 750, 100, 5, MyGeometry::Color::YELLOW);
+	circle.info();
 }

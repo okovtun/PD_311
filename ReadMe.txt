@@ -2,6 +2,10 @@ https://github.com/okovtun/PD_311.git
 https://www.youtube.com/playlist?list=PLeqyOOqxeiIM7cbl3w43YPf3YI3RBsFXf
 
 TODO:
+1. В ветке 'Colors' создать класс 'Color' и реализовать иерархию цветов;
+2. Попробовать прикрутить Builder к геометрическим фигурам;
+
+DONE:
 1. ShapeFactory обвернуть в класс;
 2. Повторяющийся код из методов draw() вынести в базовый класс;
 

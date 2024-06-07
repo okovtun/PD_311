@@ -1,4 +1,4 @@
-#include<Windows.h>
+Ôªø#include<Windows.h>
 #include<iostream>
 #include<string>
 using namespace std;
@@ -94,22 +94,22 @@ public:
 		on = !on;
 		if (on)
 		{
-			cout << "«‡„ÛÁÍ‡ Windows, ÔÓÊ‡ÎÛÈÒÚ‡ Ê‰ËÚÂ..." << endl;
+			cout << "–ó–∞–≥—Ä—É–∑–∫–∞ Windows, –ø–æ–∂–∞–ª—É–π—Å—Ç–∞ –∂–¥–∏—Ç–µ..." << endl;
 			Sleep(500);
-			cout << "¬‡¯ ‡·Ó˜ËÈ ÒÚÓÎ" << endl;
+			cout << "–í–∞—à —Ä–∞–±–æ—á–∏–π —Å—Ç–æ–ª" << endl;
 			Sleep(500);
 			info();
 		}
 		else
 		{
-			cout << "«‡‚Â¯ÂÌËÂ ‡·ÓÚ˚ ÒËÒÚÂÏ˚" << endl;
+			cout << "–ó–∞–≤–µ—Ä—à–µ–Ω–∏–µ —Ä–∞–±–æ—Ç—ã —Å–∏—Å—Ç–µ–º—ã" << endl;
 			Sleep(500);
-			cout << "\aÕÂ Á‡·Û‰¸ ‚˚‰ÂÌÛÚ¸ ÏÂÌˇ ËÁ ÓÁÂÚÍË" << endl;
+			cout << "\a–ù–µ –∑–∞–±—É–¥—å –≤—ã–¥–µ—Ä–Ω—É—Ç—å –º–µ–Ω—è –∏–∑ —Ä–æ–∑–µ—Ç–∫–∏" << endl;
 		}
 	}
 	void info()const
 	{
-		cout << "—‚ÓÈÒÚ‚‡ ÒËÒÚÂÏ˚:\n";
+		cout << "–°–≤–æ–π—Å—Ç–≤–∞ —Å–∏—Å—Ç–µ–º—ã:\n";
 		cout << type << endl;
 		cout << mb << endl;
 		cout << cpu << endl;
@@ -153,7 +153,7 @@ class OfficeComputerBuilder :public ComputerBuilder
 public:
 	void set_type()override
 	{
-		computer->set_type("ŒÙËÒÌ˚È ÍÓÏÔ¸˛ÚÂ");
+		computer->set_type("–û—Ñ–∏—Å–Ω—ã–π –∫–æ–º–ø—å—é—Ç–µ—Ä");
 	}
 	void set_mb()override
 	{
@@ -193,7 +193,7 @@ class DeveloperComputerBuilder :public ComputerBuilder
 public:
 	void set_type()override
 	{
-		computer->set_type(" ÓÏÔ¸˛ÚÂ ‡Á‡·ÓÚ˜ËÍ‡");
+		computer->set_type("–ö–æ–º–ø—å—é—Ç–µ—Ä —Ä–∞–∑—Ä–∞–±–æ—Ç—á–∏–∫–∞");
 	}
 	void set_mb()override
 	{
@@ -256,7 +256,7 @@ public:
 		}
 		else
 		{
-			cout << "—Â‰ÒÚ‚‡ Ì‡ Ò·ÓÍÛ ÍÓÏÔ¸˛ÚÂ‡ ÌÂ ·˚ÎË ‚˚‰ÂÎÂÌ˚" << endl;
+			cout << "–°—Ä–µ–¥—Å—Ç–≤–∞ –Ω–∞ —Å–±–æ—Ä–∫—É –∫–æ–º–ø—å—é—Ç–µ—Ä–∞ –Ω–µ –±—ã–ª–∏ –≤—ã–¥–µ–ª–µ–Ω—ã" << endl;
 		}
 		cout << delimiter << endl;
 	}
@@ -271,7 +271,7 @@ void main()
 #ifdef PROBLEM
 	Computer cheap_computer
 	(
-		"¡˛‰ÊÂÚÌ˚È ÍÓÏÔ¸˛ÚÂ",
+		"–ë—é–¥–∂–µ—Ç–Ω—ã–π –∫–æ–º–ø—å—é—Ç–µ—Ä",
 		"MSI H610 MicroATX",
 		"Intel Celeron G-6900",
 		"Silicon power 8 GB DDR-4",
@@ -287,7 +287,7 @@ void main()
 
 	Computer game_dev
 	(
-		" ÓÏÔ¸˛ÚÂ ‡Á‡·ÓÚ˜ËÍ‡",
+		"–ö–æ–º–ø—å—é—Ç–µ—Ä —Ä–∞–∑—Ä–∞–±–æ—Ç—á–∏–∫–∞",
 		"ASUS ROG MAXIMUS Z790 DARK HERO",
 		"Core i9-12900K BOX",
 		"Corsair Dominator 64 GB DDR-5",

@@ -9,7 +9,7 @@ using namespace std;
 class Player
 {
 public:
-	virtual Player* clone()const = 0;
+	virtual unique_ptr<Player> clone()const = 0;
 	//Player(const std::string& name, int id) :name(name), id(id) {}
 	virtual ~Player() {}
 	virtual void print()const = 0;
@@ -36,9 +36,9 @@ public:
 		cout << this << ":\t" << name << " " << id << endl;
 	}
 
-	Player* clone()const override
+	unique_ptr<Player> clone()const override
 	{
-		return new CarPlayer(*this);
+		return make_unique<CarPlayer>(*this);
 	}
 };
 
@@ -59,9 +59,9 @@ public:
 	{
 		cout << this << ":\t" << name << " " << id << endl;
 	}
-	Player* clone()const override
+	unique_ptr<Player> clone()const override
 	{
-		return new BikePlayer(*this);
+		return make_unique<BikePlayer>(*this);
 	}
 };
 
@@ -80,7 +80,7 @@ public:
 		delete players[CAR];
 		delete players[BIKE];
 	}
-	Player* CreatePlayer(PlayerType type)
+	unique_ptr<Player> CreatePlayer(PlayerType type)
 	{
 		return players[type]->clone();
 	}
@@ -109,14 +109,14 @@ void main()
 	PlayerFactory factory;
 	cout << delimiter << endl;
 
-	Player* car_player = factory.CreatePlayer(CAR);
+	std::unique_ptr<Player> car_player = factory.CreatePlayer(CAR);
 	car_player->print();
 	cout << delimiter << endl;
 
-	Player* bike_player = factory.CreatePlayer(BIKE);
+	std::unique_ptr<Player> bike_player = factory.CreatePlayer(BIKE);
 	bike_player->print();
-	cout << delimiter << endl;
+	/*cout << delimiter << endl;
 	delete bike_player;
-	delete car_player;
+	delete car_player;*/
 	cout << delimiter << endl;
 }
